@@ -1,4 +1,6 @@
+import os
 import datetime
+import argparse
 
 def read_links(file):
     with open(file, 'r') as f:
@@ -47,16 +49,25 @@ def grab_titles(data):
     return titles
 
 def main():
-    data = read_links('output.xml')
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-output_directory', required = True,
+        help="path to store output")
+    parser.add_argument('-feed_location', required = True,
+        help="location of xml file")
+
+    args = parser.parse_args()
+
+    data = read_links(args.feed_location)
     links = grab_links(data)
     titles = grab_titles(data)
     #print(data)
 
-    with open('links.txt', 'w') as f:
+    with open(os.path.join(args.output_directory, 'links.txt'), 'w') as f:
         for link in links:
             f.write('%s\n' % link)
 
-    with open('pdf_titles.txt', 'w') as f:
+    with open(os.path.join(args.output_directory, 'pdf_titles.txt'), 'w') as f:
         for title in titles:
             f.write('%s\n' % title)
 

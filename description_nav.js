@@ -1,57 +1,23 @@
-const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
 
 (async () => {
-  //const browser = await puppeteer.launch({headless: false});
   const browser = await puppeteer.launch();
   const page = (await browser.pages())[0];
+  //command line argument: url
   await page.goto(process.argv[2]);
-
 
   const html = await page.content();
   
-  
-  /*
-  await page.evaluate(() => {
-    document.querySelector('.print-button').click();
-  })
-  */
-
   url = await page.evaluate(() => {
     return document.querySelector('.print-button').getAttribute('href')
   })
 
   await page.goto(url);
-  
-  //await page.emulateMedia('screen');
   await page.content();
+
+  //command line argument: file location
   await page.pdf({path: process.argv[3]});
 
-  /*
-  const file = path.join('output', 'dom.html');
-
-  fs.writeFile(file, html, (err) => {
-    if (err) throw err;
-  });
-  */
-
-  
-
-  await browser.close();
-
-  
+  await browser.close();  
 })();
-
-/*
-
-#main-container > div.content-container > div > div > div > div > div.container.entity-details-tab.active > div > div.header-buttons > a
-
-
-Start-Process chrome -Verb Runas -Arg
-umentList '--headless --disable-gpu --print-to-pdf="C:\jobsinthedesert_tools\parsers\
-neogov-rss\test.pdf" "https://agency.governmentjobs.com/sunline/job_bulletin.cfm?jobI
-D=2343766&sharedWindow=0"'
-
-
-*/

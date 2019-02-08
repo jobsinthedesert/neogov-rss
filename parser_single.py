@@ -1,3 +1,5 @@
+import logging
+import argparse
 import JobsRSSWriter
 import bs4 as bs
 from urllib.parse import urljoin
@@ -29,18 +31,41 @@ def jobs(soup):
 
         title = job_title + ' - ' + job_type + ' - ' + job_number
         link = urljoin('https://www.governmentjobs.com/', job.find('a').get('href'))
-        
+        logging.info(link + ',' + title)
         yield link, title
 
 def main():
-    dom = "C:/jobsinthedesert_tools/parsers/neogov-rss/output/dom.html"
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-dom', required = True,
+        help="path to dom.html")
+    parser.add_argument('-output', required = True,
+        help="name of RSS file (ex: feed.xml)")
+    parser.add_argument('-title', required = True,
+        help="name in RSS feed <title> tag")
+    parser.add_argument('-link', required = True,
+        help="url in RSS feed <link> tag")
+    parser.add_argument('-log', required = True,
+        help="location of .log")
+    
+    args = parser.parse_args()
+
+    logging.basicConfig(filename=args.log, level=logging.INFO,
+        format='%(asctime)s - %(message)s')
+
+    dom = args.dom
     data = get_page_data(dom)
     jobs = search_jobs(data)
 
-    jobs_xml = JobsRSSWriter.format_rss(jobs, 'Sunline', 'https://jobsinthedesert.com/')
+    jobs_xml = JobsRSSWriter.format_rss(jobs, args.title, args.link)
 
-    with open('output.xml', 'w+') as f:
+    with open(args.output, 'w+') as f:
         f.write(jobs_xml)
 
 if __name__ == '__main__':
     main()
+
+'''
+Add path for log file
+'''
