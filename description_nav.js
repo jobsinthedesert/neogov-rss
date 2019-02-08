@@ -6,7 +6,7 @@ const puppeteer = require('puppeteer');
   //const browser = await puppeteer.launch({headless: false});
   const browser = await puppeteer.launch();
   const page = (await browser.pages())[0];
-  await page.goto('https://www.governmentjobs.com/careers/sunline/jobs/2343766/bus-driver');
+  await page.goto(process.argv[2]);
 
 
   const html = await page.content();
@@ -26,7 +26,7 @@ const puppeteer = require('puppeteer');
   
   //await page.emulateMedia('screen');
   await page.content();
-  await page.pdf({path: 'web.pdf'});
+  await page.pdf({path: process.argv[3]});
 
   /*
   const file = path.join('output', 'dom.html');
