@@ -33,7 +33,6 @@ def grab_links(data):
             links.append(url)
     
     links.pop(0)
-    #print(links)
     return links
 
 def grab_titles(data):
@@ -45,7 +44,6 @@ def grab_titles(data):
             titles.append(title)
 
     titles.pop(0)
-    #print(titles)
     return titles
 
 def main():
@@ -54,14 +52,13 @@ def main():
     parser.add_argument('-output_directory', required = True,
         help="path to store output")
     parser.add_argument('-feed_location', required = True,
-        help="location of xml file")
+        help="location of file to read")
 
     args = parser.parse_args()
 
     data = read_links(args.feed_location)
     links = grab_links(data)
     titles = grab_titles(data)
-    #print(data)
 
     with open(os.path.join(args.output_directory, 'links.txt'), 'w') as f:
         for link in links:
@@ -73,9 +70,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-'''
-Project Manager Assistant - Full-time - 1800054
-
-Project_Manager_Assistant_-_Full-time_-_1800054
-'''
