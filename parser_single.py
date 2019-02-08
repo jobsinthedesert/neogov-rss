@@ -4,6 +4,13 @@ import JobsRSSWriter
 import bs4 as bs
 from urllib.parse import urljoin
 
+'''
+todo:
+
+Add error handling for pages with 0 jobs
+Check to make sure no slashes are in job title
+'''
+
 def get_page_data(dom):
     with open(dom, 'r', encoding="utf8") as f:
         dom_output = f.read()
@@ -37,7 +44,7 @@ def jobs(soup):
             title = job_title + ' - ' + job_type
         else:
             title = job_title + ' - ' + job_type + ' - ' + job_number
-            
+
         link = urljoin('https://www.governmentjobs.com/', job.find('a').get('href'))
         logging.info(link + ',' + title)
         yield link, title
@@ -74,6 +81,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-'''
-Add path for log file
-'''
