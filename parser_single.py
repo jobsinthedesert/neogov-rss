@@ -27,9 +27,17 @@ def jobs(soup):
     for job in jobs_soup:
         job_title = job.find('td', {'class': 'job-table-title'}).find('a').text
         job_type = job.find('td', {'class': 'job-table-type'}).text
-        job_number = job.find('td', {'class': 'job-table-jobnumber'}).text
 
-        title = job_title + ' - ' + job_type + ' - ' + job_number
+        if (job.find('td', {'class': 'job-table-jobnumber'})):
+            job_number = job.find('td', {'class': 'job-table-jobnumber'}).text
+        else:
+            job_number = ''
+
+        if (job_number == ''):
+            title = job_title + ' - ' + job_type
+        else:
+            title = job_title + ' - ' + job_type + ' - ' + job_number
+            
         link = urljoin('https://www.governmentjobs.com/', job.find('a').get('href'))
         logging.info(link + ',' + title)
         yield link, title
