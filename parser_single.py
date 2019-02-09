@@ -4,13 +4,6 @@ import JobsRSSWriter
 import bs4 as bs
 from urllib.parse import urljoin
 
-'''
-todo:
-
-Add error handling for pages with 0 jobs
-Check to make sure no slashes are in job title
-'''
-
 def get_page_data(dom):
     with open(dom, 'r', encoding="utf8") as f:
         dom_output = f.read()
@@ -28,26 +21,30 @@ def search_jobs(soup):
     return jobs_list
 
 def jobs(soup):
-    jobs_table_soup = soup.find('tbody')
-    jobs_soup = jobs_table_soup.find_all('tr')
 
-    for job in jobs_soup:
-        job_title = job.find('td', {'class': 'job-table-title'}).find('a').text
-        job_type = job.find('td', {'class': 'job-table-type'}).text
+    if (soup.find('tbody')):
+        jobs_table_soup = soup.find('tbody')
+        jobs_soup = jobs_table_soup.find_all('tr')
 
-        if (job.find('td', {'class': 'job-table-jobnumber'})):
-            job_number = job.find('td', {'class': 'job-table-jobnumber'}).text
-        else:
-            job_number = ''
+        for job in jobs_soup:
+            job_title = job.find('td', {'class': 'job-table-title'}).find('a').text
+            job_type = job.find('td', {'class': 'job-table-type'}).text
 
-        if (job_number == ''):
-            title = job_title + ' - ' + job_type
-        else:
-            title = job_title + ' - ' + job_type + ' - ' + job_number
+            if (job.find('td', {'class': 'job-table-jobnumber'})):
+                job_number = job.find('td', {'class': 'job-table-jobnumber'}).text
+            else:
+                job_number = ''
 
-        link = urljoin('https://www.governmentjobs.com/', job.find('a').get('href'))
-        logging.info(link + ',' + title)
-        yield link, title
+            if (job_number == ''):
+                title = job_title + ' - ' + job_type
+            else:
+                title = job_title + ' - ' + job_type + ' - ' + job_number
+
+            link = urljoin('https://www.governmentjobs.com/', job.find('a').get('href'))
+            logging.info(link + ',' + title)
+            yield link, title
+    else:
+        print('no jobs found')
 
 def main():
 

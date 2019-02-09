@@ -19,8 +19,19 @@ def remove_title_tags(element):
     remove_open = element.replace('<title>', '')
     remove_close = remove_open.replace('</title>', '')
     remove_lead_spaces = remove_close.lstrip()
-    remove_space = remove_lead_spaces.replace(' ', '_')
-    pdf_title = remove_space + '_' + datetime.date.today().isoformat() + '.pdf'
+    job_parts = remove_lead_spaces.split(' - ')
+    
+    alnum_parts = []
+
+    for part in job_parts:
+        alnum_parts.append(''.join(e for e in part if e.isalnum()))
+
+    job_title = ''
+
+    for part in alnum_parts:
+        job_title += part[0].lower() + part[1:] + '_'
+        
+    pdf_title = job_title + datetime.date.today().isoformat() + '.pdf'
 
     return pdf_title
 
